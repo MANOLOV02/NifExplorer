@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWindowsForms>true</UseWindowsForms>
+    <MyType>WindowsForms</MyType>
+    <RootNamespace>Nif_Explorer</RootNamespace>
+    <AssemblyName>NifExplorer</AssemblyName>
+    <Product>Fast and High Quality Nif Explorer</Product>
+    <StartupObject>Nif_Explorer.Program</StartupObject>
+    <Configurations>Debug;Release;Publish</Configurations>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishSelfContained>false</PublishSelfContained>
+    <PublishAot>false</PublishAot>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <!-- x64 SOLO, a diferencia de WM que ofrece x86: el wrapper nativo de DirectXTex que decodifica
+         los DDS se linkea por plataforma, y este visor no tiene ningun motivo para existir en 32 bits. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="FO4_Base_Library" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- FO4_Base_Library trae transitivamente MaterialLib, OpenTK y el wrapper nativo. NiflySharp y
+         Ba2_Bsa_Library se referencian DIRECTO porque este proyecto nombra sus tipos: INiShape /
+         NiNode para las shapes, y BethesdaReader para leer los BA2/BSA que el usuario monta. -->
+    <ProjectReference Include="..\FO4_Base_Library\FO4_Base_Library.vbproj" />
+    <ProjectReference Include="..\NiflySharp\NiflySharp\NiflySharp.csproj" />
+    <ProjectReference Include="..\Ba2_Bsa_Library\BSA_BA2_Library_DLL.vbproj" />
+  </ItemGroup>
+
+  <!-- Fija la plataforma del wrapper NATIVO. Mismo import que los otros cinco proyectos: el SDK
+       inyecta el ProjectReference transitivo sin la metadata de plataforma. -->
+  <Import Project="..\..\DirectXTextWrapper\DirectXTexWrapper.targets" />
+
+  <!-- La configuración Publish: es Release con carpeta propia, y es de DONDE COPIA el CopyPublish.bat
+       del mod. Sin este import compilaría SIN optimizar y en verde — ver el archivo, que lo mide. -->
+  <Import Project="..\FO4_Base_Library\ConfiguracionPublish.targets" />
+
+</Project>
