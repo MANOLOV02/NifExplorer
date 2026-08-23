@@ -644,16 +644,16 @@ Partial Class MainForm
         Next
 
         ' ── 6. render ──
-        ' ⛔⛔ ACÁ NO VA NADA DE BIND POSE, y me costó una medición equivocada aprenderlo. La idea era
-        ' vaciar la paleta de huesos para que el skinning fuera un no-op "porque los vértices ya están
-        ' en bind". ES AL REVÉS: sin esqueleto, cada hueso cae al nodo del NIF (SkinningHelper.vb:665)
-        ' y la paleta resuelve el bind CORRECTO sola. MEDIDO sobre los NIF vanilla de los dos juegos,
-        ' rango en Z de la geometría:
+        ' ⛔⛔ ACÁ NO VA NADA DE BIND POSE: vaciar la paleta de huesos para que el skinning sea un no-op
+        ' ("los vértices ya están en bind") es EL DEFECTO, no el arreglo. Sin esqueleto, cada hueso cae al
+        ' fallback del nodo del NIF en SkinningHelper.ExtractSkinnedGeometry (rama sin match en
+        ' SkeletonDictionary: bindT = Transform_Class.GetGlobalTransform) y la paleta resuelve el bind
+        ' CORRECTO sola. MEDIDO sobre los NIF vanilla de los dos juegos, rango en Z de la geometría:
         '     FO4 BaseFemaleBody    crudo [-120,94, -6,73]   paleta [-0,09, 114,11]
         '     FO4 VaultNumber       crudo [ -25,94, -9,47]   paleta [94,91, 111,38]  (el número, al pecho)
         '     SSE FemaleUnderwear   crudo [-108,96, -6,36]   paleta [11,38, 113,99]
-        ' O sea: los vértices crudos dejan el cuerpo ENTERO bajo el piso. Dibujarlos "tal cual" era el
-        ' defecto, no el arreglo. La librería ya hace lo correcto: no hay que ayudarla.
+        ' Los vértices crudos dejan el cuerpo ENTERO bajo el piso. La librería ya hace lo correcto: no hay
+        ' que ayudarla.
         Try
             _preview.RenderShapes(_shapes)
         Catch ex As Exception
@@ -661,7 +661,7 @@ Partial Class MainForm
             Return
         End Try
 
-        ' ── 8. diagnóstico honesto ──
+        ' ── 7. diagnóstico honesto ──
         Dim pedidas = _resolutor.Resueltas.Select(Function(x) x.Clave).
                                  Distinct(StringComparer.OrdinalIgnoreCase).Count() + _resolutor.NoResueltas.Count
         Dim faltan = _resolutor.NoResueltas.Count
