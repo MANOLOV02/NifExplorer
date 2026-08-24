@@ -24,6 +24,7 @@ Partial Class MainForm
     Friend WithEvents btnSubir As Button
     Friend WithEvents btnBajar As Button
     Friend WithEvents btnQuitar As Button
+    Friend WithEvents btnLimpiar As Button
     Friend WithEvents lstFuentes As ListBox
     ' ── árbol ──
     Friend WithEvents txtFiltro As TextBox
@@ -125,9 +126,10 @@ Partial Class MainForm
         btnSubir = Tema.Boton("▲", 32)
         btnBajar = Tema.Boton("▼", 32)
         btnQuitar = Tema.Boton("✕", 32)
+        btnLimpiar = Tema.Boton("✕ All", 46)
         Dim filaBarra As New FlowLayoutPanel With {
             .Dock = DockStyle.Fill, .WrapContents = False, .BackColor = Tema.ColFondo, .Margin = New Padding(0)}
-        filaBarra.Controls.AddRange(New Control() {btnAddArchive, btnAddCarpeta, btnSubir, btnBajar, btnQuitar})
+        filaBarra.Controls.AddRange(New Control() {btnAddArchive, btnAddCarpeta, btnSubir, btnBajar, btnQuitar, btnLimpiar})
 
         lstFuentes = New ListBox With {
             .Dock = DockStyle.Fill, .BackColor = Tema.ColSuperficie, .ForeColor = Tema.ColFrente,

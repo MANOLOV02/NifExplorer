@@ -87,6 +87,7 @@ Partial Class MainForm
         tips.SetToolTip(btnBajar, "Move down")
         tips.SetToolTip(lstFuentes, "Resolution order, top wins. Loose folders (blue) always come before BA2/BSA archives, like the engine.")
         tips.SetToolTip(btnQuitar, "Remove source")
+        tips.SetToolTip(btnLimpiar, "Remove ALL sources of the active game")
         tips.SetToolTip(btnExportar, "Export the open NIF + its textures/materials, keeping relative paths")
 
         CambiarJuego(_juego)
@@ -312,6 +313,29 @@ Partial Class MainForm
         _cfg.Guardar()
         RefrescarLista()
         If lstFuentes.Items.Count > 0 Then lstFuentes.SelectedIndex = Math.Min(i, lstFuentes.Items.Count - 1)
+        Montar()
+    End Sub
+
+    ''' <summary>Vacía la lista ENTERA del juego activo. Toca sólo la lista del juego que se está
+    ''' viendo —nunca las dos—, por la misma razón por la que hay dos listas separadas: los paths de
+    ''' FO4 y de SSE se pisan y mezclarlos sangraría texturas de un juego en el NIF del otro.
+    ''' <para>Pide confirmación porque el gesto es irreversible y se PERSISTE al toque: se pierde el
+    ''' orden que el usuario armó a mano con ▲▼, no sólo las rutas.</para></summary>
+    Private Sub btnLimpiar_Click(sender As Object, e As EventArgs) Handles btnLimpiar.Click
+        Dim lista = _cfg.Lista(_juego)
+        If lista.Count = 0 Then Return
+
+        Dim juego = If(_juego = Config_App.Game_Enum.Fallout4, "Fallout 4", "Skyrim SE")
+        If MessageBox.Show(Me,
+                           $"Remove all {lista.Count} {juego} sources?",
+                           "Clear sources",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Warning,
+                           MessageBoxDefaultButton.Button2) <> DialogResult.Yes Then Return
+
+        lista.Clear()
+        _cfg.Guardar()
+        RefrescarLista()
         Montar()
     End Sub
 
