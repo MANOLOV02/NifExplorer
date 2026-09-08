@@ -11,6 +11,8 @@
     <RootNamespace>Nif_Explorer</RootNamespace>
     <AssemblyName>NifExplorer</AssemblyName>
     <Product>Fast and High Quality Nif Explorer</Product>
+    <AssemblyTitle>Fast and High Quality Nif Explorer</AssemblyTitle>
+    <Description>NIF viewer and exporter for Fallout 4 and Skyrim SE.</Description>
     <StartupObject>Nif_Explorer.Program</StartupObject>
     <Configurations>Debug;Release;Publish</Configurations>
     <PublishSingleFile>false</PublishSingleFile>
@@ -61,4 +63,12 @@
     <Content Include="licenses\MPL-2.0.txt" Link="licenses\MPL-2.0.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="licenses\GLFW-zlib.txt" Link="licenses\GLFW-zlib.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <!-- ⛔ LINKEADO, NO REFERENCIADO, igual que CrashReport y por un motivo todavia mas fuerte: uno de los
+       dos modos de falla que VersionGate detecta es que FO4_Base_Library.dll NO CARGUE (MEDIDO: con una lib
+       de version MENOR que la que este exe pide, el primer uso tira FileNotFoundException). Un chequeo que
+       viviera adentro de la libreria se caeria junto con ella. Ver Shared\VersionGate.vb. -->
+  <ItemGroup>
+    <Compile Include="..\FO4_Base_Library\Shared\VersionGate.vb" Link="VersionGate.vb" />
+  </ItemGroup>
+
 </Project>

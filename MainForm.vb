@@ -51,6 +51,9 @@ Partial Class MainForm
 
     Public Sub New(nifInicial As String, Optional exportarA As String = Nothing)
         InitializeComponent()
+        ' Nombre del Designer + version REAL del ensamblado. Aca y no en el .Designer.vb, que el disenador
+        ' reescribe. Nif Explorer se lleva TRES DLL propios: saber cual es esta importa mas todavia.
+        Me.Text = VersionGate.TituloConVersion(Me.Text)
         _nifInicial = nifInicial
         _exportarA = exportarA
     End Sub

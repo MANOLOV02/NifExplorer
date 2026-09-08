@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- IDENTIDAD DE LOS ENSAMBLADOS DE ESTE REPO. La explicacion completa (por que aca y no en la raiz del
+       arbol, que deriva cada campo, y por que el numero solo NO alcanza) esta en
+       ..\FO4_Base_Library\Directory.Build.props, al lado de Shared\VersionGate.vb, que es quien avisa.
+
+       El numero es de ESTE repo. Nif Explorer referencia TRES DLL propios (FO4_Base_Library,
+       Ba2_Bsa_Library y NiflySharp): es el que mas superficie de mezcla tiene.
+
+       `<Version>` es la unica perilla: de ella salen AssemblyVersion (la identidad de binding que se hornea
+       en el AssemblyRef de quien compile contra esto), FileVersion y InformationalVersion. -->
+
+  <PropertyGroup>
+    <Version>2.1.2</Version>
+    <Company>MANOLOV02</Company>
+    <Copyright>Copyright (c) 2026 MANOLOV02</Copyright>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>
