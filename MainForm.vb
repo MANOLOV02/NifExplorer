@@ -117,6 +117,7 @@ Partial Class MainForm
         End Try
 
         _preview = New PreviewControl With {.Dock = DockStyle.Fill}
+        _preview.Intent.DrawEngineSkippedForEditing = True   ' a loose NIF: a piece view (C2 v3 L5)
         panelPreview.Controls.Add(_preview)
         _preview.BringToFront()
         _preview.ApplyResize(True)
