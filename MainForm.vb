@@ -664,7 +664,15 @@ Partial Class MainForm
         ' ── 5. texturas ──
         ' La lista de 14 slots sale de la MISMA propiedad que consulta el render (MaterialData
         ' .Textures_Path_List, ya normalizada con CorrectTexturePath). Nada de reimplementar el mapeo.
+        ' ⛔ El cubo DECLARADO se publica ANTES de pedir la lista: en FO4 EnvmapTexturePath pregunta al
+        ' diccionario si el cubo declarado existe y, si no, devuelve el EyeCubeMap del motor. Con la lista
+        ' pedida primero, el diccionario todavía no tenía el cubo (acá se publica a demanda), salía el
+        ' EyeCubeMap, el declarado no se publicaba nunca y el render lo avisaba como "Missing texture"
+        ' aunque estuviera en las fuentes (MEDIDO: AnimObjectMrHandyStimpak.nif, sus dos cubos están en
+        ' Textures1 / Textures3).
         For Each sh In _shapes
+            Dim cubo = CuboDeclarado(sh)
+            If cubo <> "" AndAlso _resolutor.Publicar(cubo) Then _dependencias.Add(cubo)
             For Each p In PathsDeTextura(sh)
                 If String.IsNullOrEmpty(p) Then Continue For
                 If _resolutor.Publicar(p) Then _dependencias.Add(p)
@@ -705,14 +713,28 @@ Partial Class MainForm
         End If
     End Sub
 
-    ''' <summary>Los paths de textura de una shape, por la MISMA propiedad que usa el render.
-    ''' Se arma una <c>MaterialData</c> transitoria con el material de la shape como override — el mismo
-    ''' patrón que la librería usa para los overlays de LooksMenu.</summary>
-    Private Shared Function PathsDeTextura(sh As IRenderableShape) As IEnumerable(Of String)
-        If sh.ShapeMaterial Is Nothing Then Return Array.Empty(Of String)()
+    ''' <summary>Una <c>MaterialData</c> transitoria con el material de la shape como override — el mismo
+    ''' patrón que la librería usa para los overlays de LooksMenu —, para leer las texturas por las MISMAS
+    ''' propiedades que usa el render. Nothing si la shape no tiene material.</summary>
+    Private Shared Function MaterialDeShape(sh As IRenderableShape) As PreviewModel.RenderableMesh.MaterialData
+        If sh.ShapeMaterial Is Nothing Then Return Nothing
         Dim md As New PreviewModel.RenderableMesh.MeshData_Class()
-        Dim mat As New PreviewModel.RenderableMesh.MaterialData(md) With {.OverrideRelatedMaterial = sh.ShapeMaterial}
+        Return New PreviewModel.RenderableMesh.MaterialData(md) With {.OverrideRelatedMaterial = sh.ShapeMaterial}
+    End Function
+
+    ''' <summary>Los paths de textura de una shape, por la MISMA propiedad que usa el render.</summary>
+    Private Shared Function PathsDeTextura(sh As IRenderableShape) As IEnumerable(Of String)
+        Dim mat = MaterialDeShape(sh)
+        If mat Is Nothing Then Return Array.Empty(Of String)()
         Return mat.Textures_Path_List.ToList()
+    End Function
+
+    ''' <summary>El cubo de entorno que DECLARA el material de la shape (sin el fallback del motor que aplica
+    ''' EnvmapTexturePath), normalizado igual que la lista de texturas.</summary>
+    Private Shared Function CuboDeclarado(sh As IRenderableShape) As String
+        Dim mat = MaterialDeShape(sh)
+        If mat Is Nothing Then Return ""
+        Return FO4UnifiedMaterial_Class.CorrectTexturePath(mat.MaterialBase.EnvmapTexture)
     End Function
 
     Private Shared Function Etiqueta(j As Config_App.Game_Enum) As String
