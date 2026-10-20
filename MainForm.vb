@@ -628,7 +628,7 @@ Partial Class MainForm
 
         ' ── 3. shapes ──
         Try
-            _shapes = NifRenderableShape.FromNif(nif).Cast(Of IRenderableShape)().ToList()
+            _shapes = NifRenderableShape.FromNif(nif, rel).Cast(Of IRenderableShape)().ToList()
         Catch ex As Exception
             LimpiarPreview("NIF could not be prepared")
             MostrarEstado($"NIF could not be prepared: {ex.Message}", Tema.ColRojo)
