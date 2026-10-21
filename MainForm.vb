@@ -638,7 +638,11 @@ Partial Class MainForm
 
         If _shapes Is Nothing OrElse _shapes.Count = 0 Then
             LimpiarPreview("No renderable shapes")
-            MostrarEstado($"{Etiqueta(juegoNif)} · {Path.GetFileName(rel)} · no renderable shapes" & aviso, Tema.ColAlerta)
+            ' Ola 7e: a NIF whose every shape the loader leaves out (particles, unsupported shaders: NifRenderableShape.UntakenShapeSummary), each reason
+            ' with its count, as the frame notice would list them.
+            Dim fuera = NifRenderableShape.UntakenShapeSummary(nif)
+            Dim noTomadas = If(fuera = "", "", " · not drawn by the preview: " & fuera)
+            MostrarEstado($"{Etiqueta(juegoNif)} · {Path.GetFileName(rel)} · no renderable shapes" & noTomadas & aviso, Tema.ColAlerta)
             Return
         End If
 
