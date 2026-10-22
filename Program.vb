@@ -32,6 +32,10 @@ Module Program
         Application.SetHighDpiMode(HighDpiMode.SystemAware)
         Application.EnableVisualStyles()
         Application.SetCompatibleTextRenderingDefault(False)
+        ' The app's channel for unexpected errors - it installs no handler, so it is the WinForms unhandled-exception dialog
+        ' (Application.OnThreadException: the details, Continue / Quit) - for what the library survives and reports: a preview
+        ' control released with a step that failed (PreviewControl.Release; ola 7g round 2f, user decision r7g-04).
+        PreviewControl.UnexpectedErrorChannel = Sub(ex, origin) Application.OnThreadException(ex)
 
         Dim nifInicial As String = Nothing
         Dim exportarA As String = Nothing

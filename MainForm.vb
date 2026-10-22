@@ -162,10 +162,10 @@ Partial Class MainForm
             Config_App.SaveConfig()
         Catch
         End Try
-        Try
-            _preview?.BeginTeardown()
-        Catch
-        End Try
+        ' The one release of the preview (PreviewControl.Release, ola 7g round 2c): quiesced, then Dispose - Clean and
+        ' Control.Dispose - here, by its owner, like every other form; it was only quiesced here, its GL resources and window
+        ' going with the form's own disposal.
+        PreviewControl.Release(_preview)
     End Sub
 
     ' ══════════════════════════════════ juego ══════════════════════════════════
